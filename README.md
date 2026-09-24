@@ -2,6 +2,16 @@
 
 Tools behind my placement-season Notion workspace.
 
+## Solutions (`solutions/`)
+
+Java solutions for all 72 problems in the 4-week LeetCode plan, one package per problem (`p0001` = LC 1, etc.), in the exact `class Solution` form LeetCode expects. The same code, with a hint and an in-depth walkthrough (intuition, brute force → optimal, dry run, complexity, pitfalls, follow-ups), is inside each problem's page in the **DSA-2026** Notion database under the **💡 Solution** toggle.
+
+Every solution is tested. Run all 203 test cases with:
+
+```bash
+solutions/run-tests.sh
+```
+
 ## LeetCode → Notion sync
 
 A GitHub Action (`.github/workflows/leetcode-sync.yml`) runs every 4 hours and:
