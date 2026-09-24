@@ -1,0 +1,41 @@
+name: LeetCode → Notion sync
+
+on:
+  schedule:
+    # Every 4 hours (UTC). LeetCode only exposes your last 20 accepted
+    # submissions publicly, so running often means nothing is missed.
+    - cron: "17 */4 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Print changes without writing to Notion"
+        type: boolean
+        default: false
+
+concurrency:
+  group: leetcode-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run tests
+        run: python -m unittest leetcode_sync.test_sync
+
+      - name: Sync
+        env:
+          LEETCODE_USERNAME: ${{ vars.LEETCODE_USERNAME }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          DSA_DATABASE_ID: ${{ vars.DSA_DATABASE_ID }}
+          DAILY_LOG_DATABASE_ID: ${{ vars.DAILY_LOG_DATABASE_ID }}
+          TIMEZONE: ${{ vars.TIMEZONE }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+        run: python -m leetcode_sync.sync
